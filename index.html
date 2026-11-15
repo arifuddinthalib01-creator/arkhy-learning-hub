@@ -126,6 +126,7 @@ details.mod>summary::-webkit-details-marker{display:none}details.mod>summary:aft
 .tbl th{background:rgba(139,133,255,.14)}.tbl tr:hover td{background:rgba(139,133,255,.07)}
 @media(max-width:860px){.ill{display:none}.tb2{align-items:flex-start}}
 .ver{font-size:.7rem;opacity:.6;text-align:center;margin-top:10px}
+.chip.lo{background:#fee2e2;color:#b91c1c;border-color:#ef4444}
 </style></head><body><div id="app">Memuat…</div>
 <script>
 const M=(q,o,a)=>({k:'mc',q,o,a}),F=(q,a)=>({k:'fill',q,a}),O=a=>({k:'order',a}),X=p=>({k:'match',p});
@@ -749,7 +750,7 @@ const PT=[Q(0,'I ___ a student.',['is','am','are'],1),Q(0,'She ___ my sister.',[
 Q(1,'Yesterday I ___ to the market.',['go','goes','went'],2),Q(1,'She ___ TV now.',['watches','is watching','watch'],1),Q(1,'My brother is ___ than me.',['tall','taller','tallest'],1),Q(1,'How ___ water do you drink every day?',['many','much','a lot'],1),Q(1,'We ___ a movie last night.',['watch','watched','watching'],1),Q(1,'I am going ___ Bali next week.',['at','to','in'],1),
 Q(2,'I have ___ in Bali for two years.',['live','lived','living'],1),Q(2,'If it rains tomorrow, I ___ at home.',['would stay','will stay','stayed'],1),Q(2,'The window ___ by the boy.',['broke','was broken','has break'],1),Q(2,'You ___ smoke here. It is forbidden.',['mustn’t','don’t have to','needn’t'],0),Q(2,'I wish I ___ more free time.',['have','had','will have'],1),Q(2,'She has been studying English ___ 2020.',['for','since','during'],1)];
 const $=document.getElementById('app');const SUPABASE_URL='https://fgqbqdgziqmqtgrwokdw.supabase.co',SUPABASE_KEY='sb_publishable_yjBbIIRQKK1l1-QbBEt6VQ_v7ifov8c';
-const VER='v2.2 · 14 Nov 2026';
+const VER='v2.3 · 14 Nov 2026';
 let sb,uid,me,all=[];
 const val=id=>(document.getElementById(id)||{value:''}).value.trim();
 const lvName=['Beginner','Elementary','Intermediate'];
@@ -855,7 +856,7 @@ function pageM(){const tg=['Let’s learn the basics!','Build your everyday Engl
    const op=!full&&!opened;if(op)opened=true;
    h+=`<details class=mod ${op?'open':''}><summary><span class="cc ${full?'':'no'}">${full?'✓':mi+1}</span>${esc(m.t)}</summary><div class=in>`;
    m.th.forEach((t,ti)=>{const s=me.p[`${L.id}${mi}t${ti}`];h+=`<div class=rw><span class="cc ${s!=null?'':'no'}">${s!=null?'✓':'•'}</span><span class=nm>${t.t}</span><button onclick="theme(${li},${mi},${ti})">${s!=null?'↻ Ulangi':'Belajar'}</button></div>`});
-   h+=`<div class="rw tst"><span class="cc pl">▶</span><span class=nm>Modul Test${ts!=null?` (nilai ${ts})`:''}${ok?'':'<br><span class=mu>Selesaikan semua tema dulu.</span>'}</span><button class=p ${ok?'':'disabled'} onclick="mtest(${li},${mi})">▶ ${ts!=null?'Ulangi':'Mulai'}</button></div></div></details>`});
+   h+=`<div class="rw tst"><span class="cc pl">▶</span><span class=nm>Modul Test <span class=mu>· ⏱ ${fmtMin(testTime(li,mi))}</span>${ts!=null?` (nilai ${ts})`:''}${ok?'':'<br><span class=mu>Selesaikan semua tema dulu.</span>'}</span><button class=p ${ok?'':'disabled'} onclick="mtest(${li},${mi})">▶ ${ts!=null?'Ulangi':'Mulai'}</button></div></div></details>`});
   h+='</div>'});return h}
 function pageU(){const L=myTasks(),td=todayStr();
  const rows=L.map(a=>{const ri=refInfo(a.ref);if(!ri)return'';const dn=tdone(me,a),v=me.p[a.ref],lock=ri.li>me.lv,late=a.due_date&&td>a.due_date&&!dn,
@@ -879,6 +880,14 @@ function lessonView(l){const FB=['💡','📝','🎯','⭐','✨'];return l.spli
  const ic=(ICN.find(x=>x[0].test(h))||[0,FB[i%FB.length]])[1],long=c.length>70||c.includes('<br>');
  return `<div class=sec><span class=ic>${ic}</span><div class=sb><span class=sh>${h}</span>${long?'<br>':' '}${c}</div></div>`}).join('')}
 function theme(li,mi,ti){const L=LV[li],t=L.mods[mi].th[ti];tag(`<div class=ls><div class=lh><span class=bn>${t.t}</span><span class=hi>${['Hello!','Let’s go!','Great!'][li]} 🇬🇧</span></div><div class=lc>${lessonView(t.l)}<div class=bt><button class="p go" onclick="startEx(${li},${mi},${ti})">Mulai Latihan ›</button><button onclick="home()">Kembali</button></div></div></div>`)}
+let TMR=null;
+const fmtS=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const fmtMin=s=>{const m=s/60;return (Number.isInteger(m)?m:m.toFixed(1).replace('.',','))+' menit'};
+/* Waktu modul test = jumlah soal x rata-rata detik per soal (menurut jenis soal) x faktor kerumitan modul, dibulatkan ke 30 detik */
+const TW={mc:25,fill:35,order:45,match:60};
+const TCX={b:[0.9,0.9,0.95,0.9],e:[1.15,1.2,1.3,1.2],i:[1.5,1.55,1.7,1.55]};
+function testTime(li,mi){const L=LV[li],m=L.mods[mi],auto=m.test==='auto',pool=auto?m.th.flatMap(t=>t.bank):m.test,n=auto?10:pool.length;
+ const avg=pool.reduce((a,q)=>a+TW[q.k],0)/pool.length,cx=(TCX[L.id]||[])[mi]||1;return Math.max(180,Math.ceil(n*avg*cx/30)*30)}
 let WR=[];
 const PR=['Mantap! 🎉','Keren! 👏','Benar sekali! ⭐','Hebat! 🚀','Tepat! ✅'],EN=['Tidak apa-apa, belajar dari sini 📘','Semangat, coba lagi nanti 💪','Hampir! Ingat jawabannya ya 💡'];
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
@@ -887,12 +896,16 @@ function fin2(title,pct,w,extra){WR=w;const st=pct>=90?3:pct>=70?2:pct>=40?1:0,m
  tag(`<div class="ls res"><div class=lc style="text-align:center;padding:24px 16px"><div style="font-size:2.2rem">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><h2>${msg}</h2><div class=score>${pct}%</div><p class=mu>${title}</p>${w.length?`<p>${w.length} soal salah. Mau mengulanginya?</p><button class="p go" onclick="redo()">🔁 Ulangi soal yang salah</button>`:'<p>🎉 Semua benar!</p>'}${extra||''}<button onclick="home()">Kembali</button></div></div>`)}
 function redo(){run(WR,(sc,n,w)=>fin2('Ulangan: '+sc+' dari '+n+' benar',pc(sc,n),w))}
 function startEx(li,mi,ti){const L=LV[li],t=L.mods[mi].th[ti],list=t.bank?pick(t.bank,6):t.ex;run(list,(sc,n,w)=>{me.p[`${L.id}${mi}t${ti}`]=pc(sc,n);save();fin2('Latihan: '+sc+' dari '+n+' benar',pc(sc,n),w,`<button onclick="startEx(${li},${mi},${ti})">Latihan soal baru</button>`)})}
-function mtest(li,mi){const L=LV[li],m=L.mods[mi],list=m.test==='auto'?pick(m.th.flatMap(t=>t.bank),10):m.test;run(list,(sc,n,w)=>{const v=pc(sc,n),pass=v>=70;me.p[`${L.id}${mi}T`]=Math.max(v,me.p[`${L.id}${mi}T`]||0);const allOk=L.mods.every((x,k)=>x.soon||(me.p[`${L.id}${k}T`]||0)>=70);if(pass&&allOk&&me.lv==li&&li<2)me.lv=li+1;save();
- fin2('Modul Test: '+sc+' dari '+n+' benar',v,w,`<p>${pass?'Lulus! 🎉'+(li<2&&me.lv==li+1?' Level '+lvName[li+1]+' terbuka.':(li<2&&me.lv==li?' Lulus semua modul test yang tersedia untuk membuka level berikutnya.':'')):'Belum lulus (minimal 70). Pelajari lagi dan coba ulang.'}</p>`)})}
-function run(list,done){let i=0,ok=0,wrong=[],stk=0;
- const next=()=>{if(i>=list.length)return done(ok,list.length,wrong);const e=list[i];
-  const head=`<div class="ls ex"><div class=lh style="margin-bottom:8px"><span class=chip>Soal ${i+1}/${list.length}</span><span class=chip>⭐ ${ok}${stk>=2?' · 🔥 '+stk:''}</span></div><div class=bar2><i style="width:${i/list.length*100}%"></i></div><div class=lc style="padding-top:14px"><span class=kt>${KT[e.k][0]} ${KT[e.k][1]}</span>`;
-  const fin=(c,a)=>{if(c){ok++;stk++}else{wrong.push(e);stk=0}
+function mtest(li,mi){const L=LV[li],m=L.mods[mi],T=testTime(li,mi),n=m.test==='auto'?10:m.test.length;
+ tag(`<div class=ls><div class=lh><span class=bn>Modul Test</span><span class=hi>${['Hello!','Let’s go!','Great!'][li]} 🇬🇧</span></div><div class=lc style="text-align:center;padding:22px 16px"><h2 style="margin:0 0 4px">${esc(m.t)}</h2><p class=mu style="margin:0 0 14px">${L.n}</p><div class=grid><div class="card st"><b>📝 ${n}</b><span class=mu>soal</span></div><div class="card st"><b>⏱ ${fmtMin(T)}</b><span class=mu>waktu</span></div><div class="card st"><b>🎯 70</b><span class=mu>nilai lulus</span></div></div><p class=mu style="margin:14px 0">Waktu mulai berjalan saat kamu menekan Mulai dan tidak berhenti sampai tes selesai. Jika waktu habis, soal yang belum dijawab dihitung salah.</p><button class="p go" onclick="doTest(${li},${mi})">▶ Mulai Modul Test</button><button onclick="home()">Kembali</button></div></div>`)}
+function doTest(li,mi){const L=LV[li],m=L.mods[mi],list=m.test==='auto'?pick(m.th.flatMap(t=>t.bank),10):m.test;run(list,(sc,n,w,info)=>{const v=pc(sc,n),pass=v>=70;me.p[`${L.id}${mi}T`]=Math.max(v,me.p[`${L.id}${mi}T`]||0);const allOk=L.mods.every((x,k)=>x.soon||(me.p[`${L.id}${k}T`]||0)>=70);if(pass&&allOk&&me.lv==li&&li<2)me.lv=li+1;save();
+ fin2('Modul Test: '+sc+' dari '+n+' benar'+(info?(info.timeout?' · ⏰ waktu habis':' · waktu '+fmtS(info.used)+' dari '+fmtS(info.limit)):''),v,w,`<p>${pass?'Lulus! 🎉'+(li<2&&me.lv==li+1?' Level '+lvName[li+1]+' terbuka.':(li<2&&me.lv==li?' Lulus semua modul test yang tersedia untuk membuka level berikutnya.':'')):'Belum lulus (minimal 70). Pelajari lagi dan coba ulang.'}</p>`)},{time:testTime(li,mi)})}
+function run(list,done,opts){let i=0,ok=0,wrong=[],stk=0,ans=false;const T=opts&&opts.time,t0=Date.now(),end=T?t0+T*1000:0;clearInterval(TMR);
+ const finish=to=>{clearInterval(TMR);done(ok,list.length,wrong,T?{timeout:!!to,used:Math.min(T,Math.round((Date.now()-t0)/1000)),limit:T}:null)};
+ if(T)TMR=setInterval(()=>{const el=document.getElementById('tmr');if(!el){clearInterval(TMR);return}const r=Math.max(0,Math.ceil((end-Date.now())/1000));el.textContent='⏱ '+fmtS(r);el.classList.toggle('lo',r<=60);if(r<=0){wrong.push(...list.slice(i+(ans?1:0)));finish(true)}},500);
+ const next=()=>{ans=false;if(i>=list.length)return finish(false);const e=list[i];
+  const head=`<div class="ls ex"><div class=lh style="margin-bottom:8px"><span class=chip>Soal ${i+1}/${list.length}</span><span class=chip>⭐ ${ok}${stk>=2?' · 🔥 '+stk:''}</span>${T?`<span class=chip id=tmr>⏱ ${fmtS(Math.max(0,Math.ceil((end-Date.now())/1000)))}</span>`:''}</div><div class=bar2><i style="width:${i/list.length*100}%"></i></div><div class=lc style="padding-top:14px"><span class=kt>${KT[e.k][0]} ${KT[e.k][1]}</span>`;
+  const fin=(c,a)=>{ans=true;if(c){ok++;stk++}else{wrong.push(e);stk=0}
    const fb=document.getElementById('fb');fb.innerHTML=`<div class="fb2 ${c?'gd':'bd'}"><b>${c?pickOne(PR):'Jawaban yang benar:'}</b>${c?'':'<div class=ans>'+esc(a)+'</div><span class=mu>'+pickOne(EN)+'</span>'}</div><button class="p go full" onclick="N()">${i+1>=list.length?'Lihat hasil':'Lanjut'} ›</button>`;fb.scrollIntoView({behavior:'smooth',block:'nearest'})};
   window.N=()=>{i++;next()};
   if(e.k=='mc'){tag(head+`<p class=q>${e.q}</p>`+e.o.map((o,j)=>`<button class=opt data-j=${j}><span class=lt>${'ABCD'[j]}</span>${o}</button>`).join('')+'<div id=fb></div></div></div>');
@@ -965,7 +978,9 @@ function pageK(){const m={};all.forEach(x=>{const k=x.kelas||'';(m[k]=m[k]||[]).
 function goK(i){TF.k=KS[i]||'';tp='d';tpage()}
 function pageR(){const lv=[0,1,2].map(i=>all.filter(x=>(x.lv||0)==i)),mx=Math.max(1,...lv.map(a=>a.length)),att=all.filter(x=>why(stat(x)));
  return `<div class=pn><h2 style="margin-top:0">📊 Laporan</h2><p class=mu>Sebaran siswa per level.</p>${lvName.map((n,i)=>`<div class=rw><span class=nm style="flex:.6">${n}</span><div class=bar style="flex:2;margin:0"><i style="width:${pc(lv[i].length,mx)}%"></i></div><b>${lv[i].length}</b></div>`).join('')}<button class=exp style="margin-top:12px" onclick="csv(true)">⬇ Export CSV (semua siswa)</button></div><div class=pn><h3 style="margin-top:0">⚠️ Perlu perhatian (${att.length})</h3>${att.map(x=>`<div class=rw style="cursor:pointer" onclick="detail('${x.id}')"><span class=nm>${esc(x.name||'-')}<br><span class=mu>${esc(why(stat(x)))}</span></span></div>`).join('')||'<p class=mu>Semua siswa dalam kondisi baik. 🎉</p>'}</div>`}
-function pageS(){const ini=esc((me.name||'G')[0].toUpperCase());return `<div class=pn><h2 style="margin-top:0">⚙️ Pengaturan</h2><div style="display:flex;align-items:center;gap:14px"><span class=av style="width:64px;height:64px;font-size:1.6rem">${ini}</span><div><b>${esc(me.name||'')}</b><br><span class=mu>${esc(me.email||'')} · Guru</span></div></div><label class=mu>Nama tampilan</label><input id=gn value="${esc(me.name||'')}" maxlength=40><button class=p onclick="saveG()">Simpan</button><p id=gm class=mu></p><button onclick="logout()">Keluar</button></div>`}
+function pageS(){const ini=esc((me.name||'G')[0].toUpperCase());return `<div class=pn><h2 style="margin-top:0">⚙️ Pengaturan</h2><div style="display:flex;align-items:center;gap:14px"><span class=av style="width:64px;height:64px;font-size:1.6rem">${ini}</span><div><b>${esc(me.name||'')}</b><br><span class=mu>${esc(me.email||'')} · Guru</span></div></div><label class=mu>Nama tampilan</label><input id=gn value="${esc(me.name||'')}" maxlength=40><button class=p onclick="saveG()">Simpan</button><p id=gm class=mu></p><button onclick="logout()">Keluar</button></div>${timeCard()}`}
+function timeCard(){const r=LV.map((L,li)=>L.mods.map((m,mi)=>m.th?`<tr><td>${L.n}</td><td>${esc(m.t)}</td><td>${m.test==='auto'?10:m.test.length}</td><td>${fmtMin(testTime(li,mi))}</td></tr>`:'').join('')).join('');
+ return `<div class="pn tbl"><h3 style="margin-top:0">⏱ Waktu Modul Test</h3><p class=mu>Dihitung dari jenis soal (pilihan ganda, isian, susun kalimat, mencocokkan) dan tingkat kerumitan tiap modul.</p><table style="min-width:520px"><tr><th>Level</th><th>Modul</th><th>Soal</th><th>Waktu</th></tr>${r}</table></div>`}
 async function saveG(){const n=val('gn');if(!n)return document.getElementById('gm').textContent='Nama tidak boleh kosong.';
  const{data,error}=await sb.from('profiles').update({name:n}).eq('id',uid).select();const ok=!error&&data&&data.length;
  document.getElementById('gm').textContent=ok?'Tersimpan ✅':'Gagal menyimpan.'+(error?' ('+error.message+')':'');if(ok)me.name=n}
