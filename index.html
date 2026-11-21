@@ -127,6 +127,7 @@ details.mod>summary::-webkit-details-marker{display:none}details.mod>summary:aft
 @media(max-width:860px){.ill{display:none}.tb2{align-items:flex-start}}
 .ver{font-size:.7rem;opacity:.6;text-align:center;margin-top:10px}
 .chip.lo{background:#fee2e2;color:#b91c1c;border-color:#ef4444}
+.au{border:0;background:rgba(139,133,255,.22);border-radius:99px;padding:1px 9px;margin:0 0 0 6px;font-size:.85rem;cursor:pointer;line-height:1.5}.au.on{background:var(--pr);color:#fff}.rt{border-radius:99px;padding:4px 12px;font-size:.85rem;margin:0}
 </style></head><body><div id="app">Memuat…</div>
 <script>
 const M=(q,o,a)=>({k:'mc',q,o,a}),F=(q,a)=>({k:'fill',q,a}),O=a=>({k:'order',a}),X=p=>({k:'match',p});
@@ -750,7 +751,7 @@ const PT=[Q(0,'I ___ a student.',['is','am','are'],1),Q(0,'She ___ my sister.',[
 Q(1,'Yesterday I ___ to the market.',['go','goes','went'],2),Q(1,'She ___ TV now.',['watches','is watching','watch'],1),Q(1,'My brother is ___ than me.',['tall','taller','tallest'],1),Q(1,'How ___ water do you drink every day?',['many','much','a lot'],1),Q(1,'We ___ a movie last night.',['watch','watched','watching'],1),Q(1,'I am going ___ Bali next week.',['at','to','in'],1),
 Q(2,'I have ___ in Bali for two years.',['live','lived','living'],1),Q(2,'If it rains tomorrow, I ___ at home.',['would stay','will stay','stayed'],1),Q(2,'The window ___ by the boy.',['broke','was broken','has break'],1),Q(2,'You ___ smoke here. It is forbidden.',['mustn’t','don’t have to','needn’t'],0),Q(2,'I wish I ___ more free time.',['have','had','will have'],1),Q(2,'She has been studying English ___ 2020.',['for','since','during'],1)];
 const $=document.getElementById('app');const SUPABASE_URL='https://fgqbqdgziqmqtgrwokdw.supabase.co',SUPABASE_KEY='sb_publishable_yjBbIIRQKK1l1-QbBEt6VQ_v7ifov8c';
-const VER='v2.4 · 14 Nov 2026';
+const VER='v2.5 · 15 Nov 2026';
 let sb,uid,me,all=[];
 const val=id=>(document.getElementById(id)||{value:''}).value.trim();
 const lvName=['Beginner','Elementary','Intermediate'];
@@ -877,10 +878,41 @@ function rePlace(){if(confirm('Ulangi placement test? Level yang sudah terbuka t
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function place(){run(PT,(sc,t,w)=>{const c=l=>PT.filter(q=>q.l==l).length-w.filter(q=>q.l==l).length;me.pt=pc(sc,t);const nl=c(0)<6?0:(c(1)>=4&&c(2)>=4)?2:1;me.lv=me.placed?Math.max(me.lv||0,nl):nl;me.placed=true;save();tag(`<div class=card><h2>Hasil: ${sc}/${t}</h2><p>Kamu ditempatkan di level <b>${lvName[me.lv]}</b>. 🎉</p><p class=mu>Beginner ${c(0)}/8 · Elementary ${c(1)}/6 · Intermediate ${c(2)}/6</p><button class=p onclick="home()">Lanjut belajar</button></div>`)})}
 const ICN=[[/pendapat/i,'💭'],[/^setuju/i,'👍'],[/tidak setuju/i,'🤝'],[/alasan/i,'🔎'],[/pertanyaan umum/i,'❓'],[/menjawab tentang/i,'🙋'],[/tips/i,'💡'],[/pembuka/i,'✉️'],[/tujuan email/i,'🎯'],[/penutup/i,'👋'],[/phrasal/i,'🧩'],[/sehari-hari/i,'🏠'],[/belajar & kerja/i,'💼'],[/bersosialisasi/i,'👥'],[/letak objek/i,'📍'],[/passive/i,'🔁'],[/by \+/i,'👤'],[/reported/i,'🗣️'],[/aturan mundur/i,'⏪'],[/perubahan kata/i,'🔄'],[/^who/i,'🧑'],[/^which/i,'📦'],[/^that/i,'🔗'],[/where & whose/i,'📍'],[/gerund/i,'🅖'],[/infinitive/i,'➡️'],[/tujuan/i,'🎯'],[/keduanya/i,'↔️'],[/zero/i,'0️⃣'],[/^first conditional/i,'1️⃣'],[/first vs/i,'⚖️'],[/if i were/i,'🙋'],[/unless/i,'🚫'],[/urutan klausa/i,'🔀'],[/^kemungkinan/i,'🎲'],[/kepastian/i,'📊'],[/maybe/i,'🤔'],[/^wish/i,'🌠'],[/past participle/i,'📚'],[/^ever/i,'🌟'],[/been vs gone/i,'🧭'],[/^for & since/i,'⏳'],[/^just/i,'⚡'],[/^already/i,'✅'],[/^yet/i,'❔'],[/pasangan contoh/i,'🔗'],[/while/i,'🔄'],[/^past simple/i,'📘'],[/^present perfect/i,'📗'],[/hotel|kamar/i,'🏨'],[/check/i,'🛎️'],[/fasilitas/i,'🛜'],[/perjalanan/i,'✈️'],[/tubuh|keluhan/i,'🤒'],[/dokter/i,'🩺'],[/saran/i,'💊'],[/ungkapan/i,'💬'],[/meminta/i,'🙏'],[/menawarkan/i,'🎁'],[/menjawab/i,'💬'],[/^can/i,'💪'],[/^must/i,'⛔'],[/^should/i,'💡'],[/mendeskripsikan tempat/i,'🏙️'],[/adverbia cara/i,'🐢'],[/frekuensi/i,'🔁'],[/fungsi/i,'🎯'],[/letak/i,'🔢'],[/tidak beraturan/i,'🔀'],[/mengajak/i,'🙋'],[/menerima/i,'✅'],[/menolak/i,'🙅'],[/menentukan/i,'📍'],[/continuous/i,'🎬'],[/perbedaan/i,'⚖️'],[/jarang/i,'⚠️'],[/liburan/i,'🏖️'],[/akhir pekan|cerita/i,'📖'],[/penghubung/i,'🔗'],[/aturan/i,'📏'],[/membaca/i,'🔊'],[/apa itu|daftar penting/i,'🔀'],[/contoh|ingat/i,'💬'],[/jam|menanyakan waktu/i,'🕒'],[/menit/i,'⏱️'],[/pagi/i,'🌅'],[/janji/i,'🤝'],[/^hari$/i,'📅'],[/^bulan$/i,'🗓️'],[/tanggal/i,'🔢'],[/^on, in/i,'📌'],[/ulang tahun/i,'🎂'],[/memesan/i,'🧾'],[/favorit/i,'❤️'],[/makanan|minuman/i,'🍽️'],[/countable/i,'🔢'],[/pakaian/i,'👕'],[/harga/i,'💰'],[/warna|ukuran/i,'🎨'],[/this/i,'👉'],[/di toko/i,'🛍️'],[/pekerjaan/i,'💼'],[/tempat kerja/i,'🏢'],[/a atau an/i,'🔤'],[/kendaraan/i,'🚌'],[/pergi dengan/i,'🧭'],[/durasi/i,'⏱️'],[/tiket/i,'🎫'],[/ruangan/i,'🏠'],[/benda/i,'🛋️'],[/there/i,'👀'],[/kata depan/i,'📍'],[/tempat umum|kota/i,'🏙️'],[/kosakata|arah/i,'🧭'],[/cuaca/i,'☀️'],[/musim/i,'🍂'],[/sopan/i,'🙏'],[/menanyakan lokasi/i,'🗺️'],[/salam|greet/i,'👋'],[/pertanyaan|tanya/i,'❓'],[/to be/i,'🟰'],[/asal|negara/i,'🌍'],[/keluarga|family/i,'👨‍👩‍👧'],[/possessive|milik/i,'🔗'],[/hobi/i,'🎨'],[/pola/i,'🧩'],[/tidak suka|negatif/i,'🚫'],[/kegiatan|harian/i,'⏰'],[/simple present|kapan/i,'📘'],[/waktu/i,'🕒'],[/mendeskripsikan|teman/i,'🧑‍🤝‍🧑'],[/conditional/i,'🔀'],[/for/i,'⏳']];
+/* ===== Audio pengucapan (suara bawaan browser) ===== */
+let RATE=0.9;
+const IDW=new Set(('yang untuk dan di ke dari adalah dengan atau tidak bukan jika saat sudah belum kata sifat benda orang tempat waktu kebiasaan fakta kejadian masa lalu lampau sekarang kegiatan seperti contoh bisa harus boleh setelah sebelum selalu juga akan sedang telah pada dalam oleh karena sebuah satu dua tiga lebih paling sangat semua banyak sedikit bentuk dasar tanpa memakai pakai dipakai gunakan menggunakan menyatakan menunjukkan menjelaskan menanyakan menawarkan meminta memberi menerima menolak mengajak menjawab menceritakan membuat menambah menulis membaca bunyi huruf vokal konsonan akhiran awalan kebanyakan berakhir hilangkan gandakan suku pendek panjang aturan mengikuti diikuti jangan ingat dipisah letak objek ganti subjek kalimat pertanyaan negatif positif tanya jawaban jawab ya mungkin pasti kemungkinan kepastian pengandaian nyata situasi depan rencana niat keinginan harapan penyesalan seumur hidup pengalaman hasil durasi titik awal baru saja cepat dugaan kecil kali sering jarang kadang pernah itu ini ada kamu saya kita mereka dia nya ialah yaitu misalnya contohnya artinya berarti sama berbeda perbedaan hanya masih belum lagi tetapi tapi namun sehingga supaya agar ketika sambil sementara sampai hingga sejak antara tentang terhadap bagi menjadi menjadikan dibuat dilakukan terjadi berlangsung selesai mulai kembali berbentuk bentuknya penanda keterangan kegiatan sehari-hari pagi siang sore malam hari minggu bulan tahun kemarin besok lusa tadi nanti dulu kemudian lalu pertama kedua terakhir akhirnya penampilan rambut kosakata ungkapan sopan salam perkenalan pekerjaan keluarga teman rumah ruangan kota jalan arah cuaca musim makanan minuman pakaian warna ukuran harga toko kamar kendaraan tiket perjalanan kesehatan keluhan dokter obat tubuh bagian pendapat setuju alasan tujuan harapan permintaan penawaran penutup pembuka pesan wawancara melamar menyampaikan menutup membuka mencari menemukan mengisi melanjutkan menyerah menyalakan mematikan memakai melepas bangun mandi makan tidur pergi pulang datang bertemu bertanya berbicara bermain belajar bekerja berlibur menyebut mengubah mundur tingkat perubahan pelaporan kutipan langsung tidak-langsung informasi menambahkan penghubung penjelas klausa relatif milik pemilik kepemilikan ditambah tambah pisah kurung tulis ucapan dibaca dengar cara membaca lampau penuh kuat lemah paling-akhir tegas sekitar persen kepastian yakin ragu mungkin mustahil pasti-tidak izin kewajiban larangan saran kemampuan sebaiknya wajib dilarang dibolehkan').split(/\s+/));
+const IDL=new Set(['formal','santai','irregular','regular']);
+function speakText(h){
+ let t=h.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/\([^)]*\)/g,'').replace(/[“”"]/g,'').replace(/\.\.\./g,'').replace(/\s+([,;.!?])/g,'$1').replace(/\s[—–]\s/g,', ').replace(/(^|\s)-\w+(?:\/-\w+)*:\s*/g,'$1').replace(/\b\d+(?:st|nd|rd|th)\s+(?=[a-z])/gi,'').replace(/(\w)\/(\w)/g,'$1, $2').replace(/\s+/g,' ').trim();
+ if(!t||/\/[a-zɪʃʒθðŋ]{1,3}\/\s*:/.test(t))return'';
+ if(/[+=]/.test(t)&&t.indexOf(':')<0)return'';
+ const ar=(t.match(/→/g)||[]).length;
+ if(ar>=3&&t.includes(';'))return'';
+ if(ar>=2&&(t.match(/:/g)||[]).length>=2)return'';
+ if(/\b(?:present|past)\s+(?:simple|continuous|perfect)\b/i.test(t)&&ar)return'';
+ const parts=t.split(/(\s\/\s|\s→\s|(?<=[.!?])\s+(?=[A-Z]))/),out=[];let prevEnd=true;
+ for(let i=0;i<parts.length;i+=2){let sg=parts[i];const sep=i?parts[i-1]:'';
+  const ci=sg.indexOf(':');
+  if(ci>0&&ci<=60){const lf=sg.slice(0,ci),rt=sg.slice(ci+1),lw=lf.toLowerCase().split(/[^a-z’']+/);if(/[+=]/.test(lf)||lw.some(x=>IDW.has(x)||IDL.has(x)))sg=rt}
+  sg=sg.replace(/\s+/g,' ').trim();
+  if(!sg||/[+=✗✓]/.test(sg))continue;
+  const w=sg.match(/[A-Za-z’']+/g)||[];
+  if(!w.length||w.some(x=>IDW.has(x.toLowerCase())))continue;
+  const ended=/[.!?,;:]$/.test(sg);sg=sg.replace(/[\s.!?,;:]+$/,'');if(!sg)continue;
+  out.push({sg,j:out.length&&/^\s[\/→]\s$/.test(sep)&&!prevEnd?', ':'. '});prevEnd=ended}
+ return out.map((o,i)=>(i?o.j:'')+o.sg).join('').trim()}
+function aud(c){if(!('speechSynthesis' in window))return c;
+ return c.split('<br>').map(ln=>{const t=speakText(ln);return t?ln+` <button class=au data-s="${t.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" onclick="say(this)" aria-label="Dengarkan pengucapan">🔊</button>`:ln}).join('<br>')}
+function pickVoice(){const v=speechSynthesis.getVoices();return v.find(x=>/^en[-_]US/i.test(x.lang)&&/google|natural|samantha|aria|jenny/i.test(x.name))||v.find(x=>/^en[-_]US/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
+function say(b){if(!('speechSynthesis' in window))return alert('Perangkat ini belum mendukung suara.');
+ document.querySelectorAll('.au.on').forEach(x=>x.classList.remove('on'));speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(b.dataset.s);u.lang='en-US';const v=pickVoice();if(v)u.voice=v;u.rate=RATE;
+ b.classList.add('on');u.onend=u.onerror=()=>b.classList.remove('on');speechSynthesis.speak(u)}
+function togRate(b){RATE=RATE>0.8?0.65:0.9;b.textContent=RATE>0.8?'🐇 Normal':'🐢 Lambat'}
 function lessonView(l){const FB=['💡','📝','🎯','⭐','✨'];return l.split('<br><br>').map((b,i)=>{let h='Penjelasan',c=b;const m=b.match(/^<b>([^<]+)<\/b>(?:<br>|:\s*)([\s\S]*)$/);if(m){h=m[1].replace(/:$/,'');c=m[2]}
  const ic=(ICN.find(x=>x[0].test(h))||[0,FB[i%FB.length]])[1],long=c.length>70||c.includes('<br>');
- return `<div class=sec><span class=ic>${ic}</span><div class=sb><span class=sh>${h}</span>${long?'<br>':' '}${c}</div></div>`}).join('')}
-function theme(li,mi,ti){const L=LV[li],t=L.mods[mi].th[ti];tag(`<div class=ls><div class=lh><span class=bn>${t.t}</span><span class=hi>${['Hello!','Let’s go!','Great!'][li]} 🇬🇧</span></div><div class=lc>${lessonView(t.l)}<div class=bt><button class="p go" onclick="startEx(${li},${mi},${ti})">Mulai Latihan ›</button><button onclick="home()">Kembali</button></div></div></div>`)}
+ return `<div class=sec><span class=ic>${ic}</span><div class=sb><span class=sh>${h}</span>${long?'<br>':' '}${aud(c)}</div></div>`}).join('')}
+function theme(li,mi,ti){const L=LV[li],t=L.mods[mi].th[ti];tag(`<div class=ls><div class=lh><span class=bn>${t.t}</span><span class=hi>${['Hello!','Let’s go!','Great!'][li]} 🇬🇧</span></div><div class=lc>${'speechSynthesis' in window?`<div style="text-align:right;padding-top:8px"><button class=rt onclick="togRate(this)">${RATE>0.8?'🐇 Normal':'🐢 Lambat'}</button></div>`:''}${lessonView(t.l)}<div class=bt><button class="p go" onclick="startEx(${li},${mi},${ti})">Mulai Latihan ›</button><button onclick="home()">Kembali</button></div></div></div>`)}
 let IP=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();IP=e});
 addEventListener('appinstalled',()=>{IP=null});
