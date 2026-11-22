@@ -1,7 +1,7 @@
-// Service worker Arkhy Learning Hub (v2.5)
+// Service worker Arkhy Learning Hub (v3.0)
 // Strategi: jaringan dulu (selalu ambil versi terbaru), cadangan dari cache jika offline.
 // Hanya file dari situs ini yang disimpan; permintaan ke Supabase dan CDN tidak disentuh.
-const CACHE='arkhy-v2.5';
+const CACHE='arkhy-v3.0';
 const SHELL=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).catch(()=>{}))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
